@@ -4,6 +4,7 @@ import base64
 import requests
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import pytz
 from datetime import datetime, timedelta, time
 from flask import Flask, render_template
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -23,6 +24,7 @@ LOCATIONS = {
 
 API_KEY = os.getenv("OPENWEATHER_API_KEY")
 
+eastern = pytz.timezone('America/New_York')
 
 def fetch_forecast_by_coords(lat, lon):
     params = {
@@ -39,7 +41,9 @@ def fetch_forecast_by_coords(lat, lon):
 def parse_forecast(data):
     times, temps_c, hums, rain_mm = [], [], [], []
     for entry in data["list"]:
-        dt = datetime.fromtimestamp(entry["dt"])
+        # Assume API gives times in UTC
+        dt_utc = datetime.utcfromtimestamp(entry["dt"]).replace(tzinfo=pytz.utc)
+        dt = dt_utc.astimezone(eastern)  # convert to Eastern Time
         times.append(dt)
         temps_c.append(entry["main"]["temp"])
         hums.append(entry["main"]["humidity"])
