@@ -216,47 +216,4 @@ def generate_dashboard_plot():
         except Exception as e:
             print(f"Error loading data for {loc_name}: {e}")
             times, temps_f, hums, rain_mm = [], [], [], []
-        all_data.append((loc_name, times, temps_f, hums, rain_mm))
-        if temps_f:
-            mx = max(temps_f)
-            if mx > max_temp_global:
-                max_temp_global = mx
-        all_times.extend(times)
-
-    if not all_times:
-        return None
-
-    x_min = min(all_times) - timedelta(hours=6)
-    x_max = max(all_times) + timedelta(days=1)
-
-    for i, (ax, (loc_name, times, temps_f, hums, rain_mm)) in enumerate(zip(axes, all_data)):
-        if not times:
-            ax.set_title(loc_name, fontweight="bold", fontsize=16)
-            continue
-        alpha_map, day_metrics, rain_map, all_days = daily_metrics_and_alpha_with_rain(times, temps_f, hums, rain_mm)
-        show_xaxis = (i == len(axes) - 1)
-        plot_location_forecast(ax, times, temps_f, hums, alpha_map, day_metrics, rain_map, all_days,
-                               loc_name, max_temp_global, x_min, x_max, show_xaxis)
-
-    plt.tight_layout()
-    return fig
-
-
-@app.route("/")
-def index():
-    if not API_KEY:
-        return "<h1>Error: Please set your OPENWEATHER_API_KEY environment variable.</h1>"
-
-    fig = generate_dashboard_plot()
-    if fig is None:
-        return "<h1>No data available to plot.</h1>"
-
-    png_image = io.BytesIO()
-    FigureCanvas(fig).print_png(png_image)
-    encoded = base64.b64encode(png_image.getvalue()).decode('utf-8')
-    plt.close(fig)
-    return render_template("index.html", plot_url=f"data:image/png;base64,{encoded}")
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
+        all_data.append((loc_name, times, temps_f,
