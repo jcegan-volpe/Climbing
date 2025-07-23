@@ -20,6 +20,8 @@ LOCATIONS = {
     "Merriam Woods": {"lat": 43.9948, "lon": -71.6828},
     "The Gunks": {"lat": 41.7459, "lon": -74.0890},
     "Hanging Mountain": {"lat": 42.0618, "lon": -73.1150},
+    "Pawtuckaway": {"lat": 43.0311, "lon": -71.1475},
+    "Cathedral Ledge": {"lat": 44.0619, "lon": -71.1237},
 }
 
 API_KEY = os.getenv("OPENWEATHER_API_KEY")
